@@ -12,7 +12,7 @@ d3.parcoords = function(config) {
     width: 600,
     height: 300,
     margin: { top: 24, right: 0, bottom: 12, left: 0 },
-    nullValueSeparator: "undefined", // set to "top" or "bottom"
+    nullValueSeparator: "bottom", // set to "top" or "bottom" or "nullValue"
     nullValueSeparatorPadding: { top: 8, right: 0, bottom: 8, left: 0 },
     color: "#069",
     composite: "source-over",
@@ -41,6 +41,7 @@ d3.parcoords = function(config) {
       }
     });
   }
+
 var pc = function(selection) {
   selection = pc.selection = d3.select(selection);
 
@@ -111,6 +112,16 @@ var side_effects = d3.dispatch.apply(this,d3.keys(__))
     __.dimensions = pc.applyDimensionDefaults(d3.keys(d.value));
     xscale.domain(pc.getOrderedDimensionKeys());
     pc.sortDimensions();
+    // ****************************************************************
+    // new code here: hide this dimension if 'hide' flag is set in dims
+    d3.keys(__.dimensions).forEach(function(k) {
+      if ((__.dimensions)[k]['hide']) {
+        __.hideAxis.push(k)
+        }
+    })
+    // End new code
+    // ***************************************************************
+
     if (flags.interactive){pc.render().updateAxes();}
   })
   .on("bundleDimension", function(d) {
@@ -216,6 +227,18 @@ pc.autoscale = function() {
     },
     "number": function(k) {
       var extent = d3.extent(__.data, function(d) { return +d[k]; });
+      // ****************************************************************
+      // new code here: overide extent if ylims are set
+      if (__.dimensions[k].ymin) {
+        console.log("overriding ymin for ", k, " : changing from ", extent[0], " to ", __.dimensions[k].ymin)
+        extent[0] = __.dimensions[k].ymin;
+      }
+      if (__.dimensions[k].ymax) {
+        console.log("overriding ymax for ", k, " : changing from ", extent[1], " to ", __.dimensions[k].ymax)
+       extent[1] = __.dimensions[k].ymax;
+      }
+      // End new code
+      // ***************************************************************
 
       // special case if single value
       if (extent[0] === extent[1]) {
@@ -402,6 +425,9 @@ pc.detectDimensionTypes = function(data) {
   return types;
 };
 pc.render = function() {
+  console.log("render called");
+  var dummy = __.data;
+  console.log("data ", dummy);
   // try to autodetect dimensions and create scales
   if (!d3.keys(__.dimensions).length) {
     pc.detectDimensions()
@@ -634,11 +660,23 @@ function paths(data, ctx) {
 };
 
 // returns the y-position just beyond the separating null value line
-function getNullPosition() {
+function getNullPosition(dim) {
 	if (__.nullValueSeparator=="bottom") {
+		console.log("A value is NULL, nullValueSeparator set to 'bottom'");
 		return h()+1;
 	} else if (__.nullValueSeparator=="top") {
+		console.log("A value is NULL, nullValueSeparator set to 'top'");
 		return 1;
+// ****************************************************************
+// new code here:  add user-defined null value option
+	} else if (__.nullValueSeparator=="nullValue") {
+	  if (typeof __.dimensions[dim].nullValue == 'undefined') {
+	    console.log("nullValueSeparator set to show user-defined null value, but no null value specified")
+	  } else {
+	  return __.dimensions[dim].yscale(__.dimensions[dim].nullValue);
+// End new code
+// ***************************************************************
+	  }
 	} else {
 		console.log("A value is NULL, but nullValueSeparator is not set; set it to 'bottom' or 'top'.");
 	}
@@ -646,11 +684,57 @@ function getNullPosition() {
 };
 
 function single_path(d, ctx) {
+  var nullValueMode = false;
+  var x, y;
 	d3.entries(__.dimensions).forEach(function(p, i) {  //p isn't really p
+	//***************************************
+	// new code here: change line from solid to dashed where it goes through a null value; allow for user-defined null values
+	// old code commented out
 		if (i == 0) {
-			ctx.moveTo(position(p.key), typeof d[p.key] =='undefined' ? getNullPosition() : __.dimensions[p.key].yscale(d[p.key]));
+// original code:
+//			ctx.moveTo(position(p.key), typeof d[p.key] =='undefined' ? getNullPosition() : __.dimensions[p.key].yscale(d[p.key]));
+      nullValueMode = (typeof d[p.key] =='object')
+		  if (nullValueMode) {
+		    // first value is a null value
+        ctx.setLineDash([5, 10]); // styling for line through null value
+        y = getNullPosition(p.key);
+		  } else {
+		    ctx.setLineDash([]);
+		    y = __.dimensions[p.key].yscale(d[p.key]);
+		  }
+		  x = position(p.key);
+		  ctx.moveTo(x, y);
 		} else {
-			ctx.lineTo(position(p.key), typeof d[p.key] =='undefined' ? getNullPosition() : __.dimensions[p.key].yscale(d[p.key]));
+// original code:
+//			ctx.lineTo(position(p.key), typeof d[p.key] =='undefined' ? getNullPosition() : __.dimensions[p.key].yscale(d[p.key]));
+	    if (typeof d[p.key] =='object') {
+	      // next value is a null value
+	      if (!nullValueMode) {
+	        // need to close path, begin a new one with a line styled to indicate path is going through null
+	        ctx.stroke();
+	        ctx.setLineDash([5, 10]); // styling for line through null value
+	        nullValueMode = true;
+	        ctx.beginPath();
+	        ctx.moveTo(x, y);
+	      }
+	      x = position(p.key);
+	      y = getNullPosition(p.key);
+	      ctx.lineTo(x, y);
+		  } else { // next value is not a null value
+		    x = position(p.key);
+		    y = __.dimensions[p.key].yscale(d[p.key]);
+		    ctx.lineTo(x, y);
+		    if (nullValueMode) {
+		      // need to close path and begin new one with a solid line
+		      ctx.stroke();
+		      ctx.setLineDash([]);
+		      nullValueMode = false;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+		    }
+		  }
+// End of new code
+// ***********************************
 		}
 	});
 };
@@ -704,7 +788,7 @@ function flipAxisAndUpdatePCP(dimension) {
 
 function rotateLabels() {
   if (!__.rotateLabels) return;
-  
+
   var delta = d3.event.deltaY;
   delta = delta < 0 ? -5 : delta;
   delta = delta > 0 ? 5 : delta;
@@ -1332,7 +1416,7 @@ pc.brushMode = function(mode) {
       .attr("stroke-width", 2);
 
     drag
-      .on("drag", function(d, i) { 
+      .on("drag", function(d, i) {
         var ev = d3.event;
         i = i + 1;
         strum["p" + i][0] = Math.min(Math.max(strum.minX + 1, ev.x), strum.maxX);

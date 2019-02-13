@@ -34,7 +34,10 @@
 #'          \code{ mode = "queue" }
 #' @param rate integer rate at which render will queue; see \href{https://github.com/syntagmatic/parallel-coordinates\#parcoords_rate}{}
 #'          for a full discussion and some recommendations
-#' @param dimensions \code{list} to customize axes dimensions.
+#' @param dimensions \code{list} to customize axes dimensions:
+#'          Add nullValue=<some number> to set the value to be shown if the data value is NA
+#'          Add hide=TRUE to hide this dimension
+#'          Add ymin=<some number> and/or ymax=<some number> to specify ylimits
 #' @param tasks a character string or \code{\link[htmlwidgets]{JS}} or list of
 #'          strings or \code{JS} representing a JavaScript function(s) to run
 #'          after the \code{parcoords} has rendered.  These provide an opportunity
@@ -53,6 +56,8 @@
 #' @param height integer in pixels defining the height of the widget.  Autosizing to 400px
 #'          of the widget container will occur if \code{ height = NULL }.
 #' @param elementId unique \code{CSS} selector id for the widget.
+#' @param nullValueSeparator "top" - put above chart; "bottom" - put below chart;
+#'          "nullValue" - use "nullValue" element passed through dimensions
 #'
 #' @return An object of class \code{htmlwidget} that will
 #' intelligently print itself into HTML in a variety of contexts
@@ -134,6 +139,7 @@ parcoords <- function(
   , width = NULL
   , height = NULL
   , elementId = NULL
+  , nullValueSeparator = "bottom"
 ) {
 
   crosstalk_opts <- NULL
@@ -166,7 +172,7 @@ parcoords <- function(
       brushMode = "2D-strums"
     } else if( grepl( x= brushMode, pattern = "1[dD](-)*([Aa]x[ie]s)*" ) ||
                grepl( x= brushMode, pattern = "[mM](ult)" )
-     ) {
+    ) {
       if( grepl( x= brushMode, pattern = "[mM](ult)" ) ) {
         brushMode = "1D-axes-multi" }
       else if( grepl( x= brushMode, pattern = "1[dD](-)*([Aa]x[ie]s)*" ) ) {
@@ -225,6 +231,7 @@ parcoords <- function(
       , dimensions = dimensions
       , width = width
       , height = height
+      , nullValueSeparator = nullValueSeparator
     )
     , autoresize = autoresize
     , tasks = tasks
