@@ -253,24 +253,26 @@ pc.autoscale = function() {
     },
     "string": function(k) {
       var counts = {},
-          domain = [];
-
-      // Let's get the count for each value so that we can sort the domain based
-      // on the number of items for each value.
-      __.data.map(function(p) {
-        if (p[k] === undefined && __.nullValueSeparator!== "undefined"){
-          return; // null values will be drawn beyond the horizontal null value separator!
-        }
-        if (counts[p[k]] === undefined) {
-          counts[p[k]] = 1;
-        } else {
-          counts[p[k]] = counts[p[k]] + 1;
-        }
-      });
-
-      domain = Object.getOwnPropertyNames(counts).sort(function(a, b) {
-        return counts[a] - counts[b];
-      });
+      domain = [];
+      if (__.dimensions[k].ordering) { // use user-specified ordering
+        domain = __.dimensions[k].ordering
+      } else {
+        // Let's get the count for each value so that we can sort the domain based
+        // on the number of items for each value.
+        __.data.map(function(p) {
+          if (p[k] === undefined && __.nullValueSeparator!== "undefined"){
+            return; // null values will be drawn beyond the horizontal null value separator!
+          }
+         if (counts[p[k]] === undefined) {
+           counts[p[k]] = 1;
+         } else {
+           counts[p[k]] = counts[p[k]] + 1;
+         }
+       });
+        domain = Object.getOwnPropertyNames(counts).sort(function(a, b) {
+          return counts[a] - counts[b];
+        });
+      }
 
       return d3.scale.ordinal()
         .domain(domain)
@@ -425,9 +427,7 @@ pc.detectDimensionTypes = function(data) {
   return types;
 };
 pc.render = function() {
-  console.log("render called");
   var dummy = __.data;
-  console.log("data ", dummy);
   // try to autodetect dimensions and create scales
   if (!d3.keys(__.dimensions).length) {
     pc.detectDimensions()

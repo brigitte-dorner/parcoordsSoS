@@ -35,9 +35,14 @@
 #' @param rate integer rate at which render will queue; see \href{https://github.com/syntagmatic/parallel-coordinates\#parcoords_rate}{}
 #'          for a full discussion and some recommendations
 #' @param dimensions \code{list} to customize axes dimensions:
-#'          Add nullValue=<some number> to set the value to be shown if the data value is NA
+#'          Add nullValue=<some number> to set the value to be shown in the plot if the data value is NA
 #'          Add hide=TRUE to hide this dimension
-#'          Add ymin=<some number> and/or ymax=<some number> to specify ylimits
+#'          Add ymin=<some number> and/or ymax=<some number> to specify ylimits for this dimension
+#'          Add ordering=<character vector> to specify the oder in which values of this dimension
+#'          should appear on the axis, e.g., ordering = levels(thisDim) to maintain ordering for an
+#'          ordered factor  (factor/character dims only)
+#' @param selectedRows \code{list} that specifies the row names of the rows that should appear selected
+#'          default NULL for all rows
 #' @param tasks a character string or \code{\link[htmlwidgets]{JS}} or list of
 #'          strings or \code{JS} representing a JavaScript function(s) to run
 #'          after the \code{parcoords} has rendered.  These provide an opportunity
@@ -134,6 +139,7 @@ parcoords <- function(
   , mode = F
   , rate = NULL
   , dimensions = NULL
+  , selectedRows = NULL
   , tasks = NULL
   , autoresize = FALSE
   , width = NULL
@@ -172,7 +178,7 @@ parcoords <- function(
       brushMode = "2D-strums"
     } else if( grepl( x= brushMode, pattern = "1[dD](-)*([Aa]x[ie]s)*" ) ||
                grepl( x= brushMode, pattern = "[mM](ult)" )
-    ) {
+     ) {
       if( grepl( x= brushMode, pattern = "[mM](ult)" ) ) {
         brushMode = "1D-axes-multi" }
       else if( grepl( x= brushMode, pattern = "1[dD](-)*([Aa]x[ie]s)*" ) ) {
@@ -231,6 +237,7 @@ parcoords <- function(
       , dimensions = dimensions
       , width = width
       , height = height
+      , selectedRows = selectedRows
       , nullValueSeparator = nullValueSeparator
     )
     , autoresize = autoresize
@@ -256,6 +263,7 @@ parcoords <- function(
     pc$dependencies <- crosstalk::crosstalkLibs()
   }
 
+  print("Running parcoords modified for SoS")
   pc
 }
 

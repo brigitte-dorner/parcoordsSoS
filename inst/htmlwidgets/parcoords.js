@@ -43,23 +43,32 @@ HTMLWidgets.widget({
 
       //identify the brushed elements and return those data IDs to Rshiny
       //the parcoords.on("brush",function(d)){} only works with 1D-axes selection
-      if (HTMLWidgets.shinyMode){
+      if (HTMLWidgets.shinyMode){ //new code, parallel to code for crosstalk below
         parcoords.on("render", function() {
           var ids = [];
-          if(this.brushed()){
+          if(this.brushed() && this.brushed().length < parcoords.data().length){
             ids = this.brushed().map(function(d){
               return d.names;
             })
+            if(Shiny.onInputChange){
+              Shiny.onInputChange(el.id + "_brushed_row_names", ids);
+            }
+            this.highlight(this.brushed());
+          } else {
+            parcoords.unhighlight();
+            if(typeof(parcoords.brushResetter) !== "undefined" &&
+                parcoords.brushResetter === "self"
+            ) {
+              if(Shiny.onInputChange){
+                 Shiny.onInputChange(el.id + "_brushed_row_names", null);
+              }
+            } // end new code
           }
-
           //return the brushed row names
-          if(Shiny.onInputChange){
-            Shiny.onInputChange(el.id + "_brushed_row_names", ids);
-          }
-        });
+         });
       }
 
-      // separate from above Shiny handling for now,
+      // crosstalk: separate from above Shiny handling for now,
       //   but eventually integrate
       var crosstalk_supported = typeof(crosstalk) !== "undefined" &&
           typeof(x.crosstalk_opts) !== "undefined";
@@ -115,7 +124,7 @@ HTMLWidgets.widget({
       }
 
       // customize our parcoords according to options
-      Object.keys( x.options ).filter(function(k){ return k !== "reorderable" && k !== "brushMode" && k !== "brushPredicate" && k!== "color" && k!=="rownames"}).map( function(k) {
+      Object.keys( x.options ).filter(function(k){ return k !== "reorderable" && k !== "brushMode" && k !== "brushPredicate" && k!== "color" && k!=="rownames" && k!== "selectedRows"}).map( function(k) {
         // if the key exists within parcoords
         if ( parcoords[k] ){
           if( typeof x.options[k] === "boolean" ){
@@ -180,8 +189,7 @@ HTMLWidgets.widget({
       }
 
       // now render our parcoords
-      parcoords
-        .render()
+      parcoords.render()
 
       if( x.options.reorderable ) {
         parcoords.reorderable();
@@ -220,22 +228,48 @@ HTMLWidgets.widget({
         });
       }
 
+// -------------- begin: new code ------------
+      // todo: integrate with crosstalk selection
+
+      if (!crosstalk_supported) {
+        if( x.options.selectedRows ){
+          var selected = x.options.selectedRows;
+          if(!Array.isArray(selected)) {selected = [selected]; }
+          // use highight to show selection
+          parcoords.highlight(parcoords.data().filter(function(d,i) {
+              return selected.indexOf(d.names) >= 0;
+          }));
+        } else {
+          parcoords.unhighlight();
+        }
+      }
+
+      if( x.options.selectedRows ) {
+        parcoords.highlighted = x.options.selectedRows
+      }
+
+      // highlight currently selected rows when using crosstalk
+      var set_to_crosstalk_selection = function() {
+          if(!(typeof(ct_sel.value) === "undefined" ||
+               ct_sel.value === null ||
+               (Array.isArray(ct_sel.value) && ct_sel.value.length === 0))) {
+            var selected = ct_sel.value;
+            // handle non-array single-value
+            if(!Array.isArray(selected)) {selected = [selected]; }
+            // use highight to show selection
+            parcoords.highlight(parcoords.data().filter(function(d,i) {
+                 return selected.indexOf(d.key_) >= 0;
+            }));
+          } else {
+            parcoords.unhighlight();
+          }
+      }
+
       // now that we have drawn and executed tasks
-      //   wire up crosstalk selection from outside parcoords
+      // wire up crosstalk selection from outside parcoordsif using crosstalk
       if(crosstalk_supported) {
         ct_sel.on("change", function(sel){
-          if(!(
-            typeof(ct_sel.value) === "undefined" ||
-            ct_sel.value === null ||
-            (Array.isArray(ct_sel.value) && ct_sel.value.length === 0)
-          )) {
-            var selected = ct_sel.value;
-
-            // handle non-array single-value
-            if(!Array.isArray(selected)) {
-              selected = [selected];
-            }
-            if(sel.sender === ct_sel){
+           if(sel.sender === ct_sel){
               // do nothing for now
             } else {
               // clear brushes
@@ -249,16 +283,52 @@ HTMLWidgets.widget({
                 parcoords.brushReset();
                 parcoords.brushResetter = "self";
               }
-              // use highlight to show the selection
-              parcoords.highlight(parcoords.data().filter(function(d,i) {
-                return selected.indexOf(d.key_) >= 0;
-              }));
             }
-          } else {
-            parcoords.unhighlight();
-          }
+            set_to_crosstalk_selection();
         });
+
+        set_to_crosstalk_selection();
       }
+
+// ----------------- end: new code (old code commented out below) -------------
+//      if(crosstalk_supported) {
+//        ct_sel.on("change", function(sel){
+//          if(!(
+//            typeof(ct_sel.value) === "undefined" ||
+//            ct_sel.value === null ||
+//            (Array.isArray(ct_sel.value) && ct_sel.value.length === 0)
+//          )) {
+//            var selected = ct_sel.value;
+//
+//            // handle non-array single-value
+//            if(!Array.isArray(selected)) {
+//              selected = [selected];
+//            }
+//            if(sel.sender === ct_sel){
+//              // do nothing for now
+//            } else {
+//              // clear brushes
+//              if(parcoords.brushed()){
+//                // nasty way of determining source of brush reset
+//                //   need this to know whether to change
+//                //   crosstalk selection or if the brush reset
+//                //   is an outcome caused by something other than
+//                //   this parcoords changing the selection
+//                parcoords.brushResetter = "other";
+//                parcoords.brushReset();
+//                parcoords.brushResetter = "self";
+//              }
+//              // use highlight to show the selection
+//              parcoords.highlight(parcoords.data().filter(function(d,i) {
+//                return selected.indexOf(d.key_) >= 0;
+//              }));
+//            }
+//          } else {
+//            parcoords.unhighlight();
+//          }
+//        });
+//      }
+
 
       return instance;
 
@@ -276,13 +346,12 @@ HTMLWidgets.widget({
         //      someone supplies data in an atypical way
         if( x.data.constructor.name === "Object" ){
           // use HTMLWidgets function to convert to an array of objects (row format)
-          x.data = HTMLWidgets.dataframeToD3( x.data )
+          x.data = HTMLWidgets.dataframeToD3( x.data );
         }
 
         instance.x = x;
 
         instance = draw(el, instance);
-
       },
 
       resize: function(width, height) {
