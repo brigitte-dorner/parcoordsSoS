@@ -488,7 +488,9 @@ pc.render.queue = function() {
 pc.renderBrushed.default = function() {
   pc.clear('brushed');
 
-  if (isBrushed()) {
+ // if (isBrushed()) {
+ // new code: only try to render individual paths if there are any
+  if (isBrushed() && __.brushed) {
     __.brushed.forEach(path_brushed);
   }
 };
