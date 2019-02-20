@@ -312,7 +312,7 @@ pc.autoscale = function() {
   ctx.brushed.globalCompositeOperation = __.composite;
   ctx.brushed.globalAlpha = __.alpha;
   ctx.brushed.scale(devicePixelRatio, devicePixelRatio);
-  ctx.highlight.lineWidth = 3;
+  ctx.highlight.lineWidth = 1.4;
   ctx.highlight.scale(devicePixelRatio, devicePixelRatio);
 
   return this;
