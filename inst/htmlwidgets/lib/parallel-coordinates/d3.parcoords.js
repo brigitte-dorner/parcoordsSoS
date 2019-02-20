@@ -443,7 +443,13 @@ pc.render = function() {
 pc.renderBrushed = function() {
   if (!d3.keys(__.dimensions).length) pc.detectDimensions();
 
-  pc.renderBrushed[__.mode]();
+  // new code: renderBrushed.default may fail if crosstalk selection is cleared
+  // externally. Need to figure out why this is happening. In the meantime, catch
+  // error and proceed with rendering
+  try { pc.renderBrushed[__.mode](); }
+  catch(e) { console.log( "error in pc.renderBrushed[", __.mode, "]:", e) }
+
+ // pc.renderBrushed[__.mode]();
 
   events.render.call(this);
   return this;
