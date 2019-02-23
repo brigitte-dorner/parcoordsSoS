@@ -805,6 +805,10 @@ function dimensionLabels(d) {
   return __.dimensions[d].title ? __.dimensions[d].title : d;  // dimension display names
 }
 
+function dimensionInfo(d) {
+  return __.dimensions[d].info ? __.dimensions[d].info : "";  // dimension display tool tips
+}
+
 pc.createAxes = function() {
   if (g) pc.removeAxes();
 
@@ -846,7 +850,8 @@ pc.createAxes = function() {
       })
       .text(dimensionLabels)
       .on("dblclick", flipAxisAndUpdatePCP)
-      .on("wheel", rotateLabels);
+      .on("wheel", rotateLabels)
+      .append("title").text(dimensionInfo);
 
   if (__.nullValueSeparator=="top") {
     pc.svg.append("line")

@@ -38,6 +38,7 @@
 #'          Add nullValue=<some number> to set the value to be shown in the plot if the data value is NA
 #'          Add hide=TRUE to hide this dimension
 #'          Add ymin=<some number> and/or ymax=<some number> to specify ylimits for this dimension
+#'          Add info=<some string> to have information on the given dimension appear in a tool-tip-style popup
 #'          Add ordering=<character vector> to specify the oder in which values of this dimension
 #'          should appear on the axis, e.g., ordering = levels(thisDim) to maintain ordering for an
 #'          ordered factor  (factor/character dims only)
