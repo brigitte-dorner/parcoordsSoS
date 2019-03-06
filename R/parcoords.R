@@ -42,6 +42,7 @@
 #'          Add ordering=<character vector> to specify the oder in which values of this dimension
 #'          should appear on the axis, e.g., ordering = levels(thisDim) to maintain ordering for an
 #'          ordered factor  (factor/character dims only)
+#'          Add title="your axis title" to set the label for this dimension
 #' @param selectedRows \code{list} that specifies the row names of the rows that should appear selected
 #'          default NULL for all rows
 #' @param tasks a character string or \code{\link[htmlwidgets]{JS}} or list of
