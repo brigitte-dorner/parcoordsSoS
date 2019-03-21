@@ -3,7 +3,9 @@ d3.parcoords = function(config) {
     data: [],
     highlighted: [],
     dimensions: {},
-    dimensionTitleRotation: 0,
+    // BD
+    // dimensionTitleRotation: 0,
+    dimensionTitleRotation: -15,
     brushed: false,
     brushedColor: null,
     alphaOnBrushed: 0.0,
@@ -842,7 +844,9 @@ pc.createAxes = function() {
       })
     .append("svg:text")
       .attr({
-        "text-anchor": "middle",
+        // BD
+        //"text-anchor": "middle",
+        "text-anchor": "start",
         "y": 0,
         "transform": "translate(0,-5) rotate(" + __.dimensionTitleRotation + ")",
         "x": 0,
