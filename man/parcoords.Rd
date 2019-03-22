@@ -7,8 +7,9 @@
 parcoords(data = NULL, rownames = T, color = NULL, brushMode = NULL,
   brushPredicate = "and", alphaOnBrushed = NULL, reorderable = F,
   axisDots = NULL, margin = NULL, composite = NULL, alpha = NULL,
-  queue = F, mode = F, rate = NULL, dimensions = NULL, tasks = NULL,
-  autoresize = FALSE, width = NULL, height = NULL, elementId = NULL)
+  queue = F, mode = F, rate = NULL, dimensions = NULL, selectedRows = NULL,
+  tasks = NULL, autoresize = FALSE, width = NULL, height = NULL, elementId = NULL,
+  nullValueSeparator = "bottom", dimensionTitleRotation = 0)
 }
 \arguments{
 \item{data}{data.frame with data to use in the chart}
@@ -58,6 +59,8 @@ for a full discussion and some recommendations}
 
 \item{dimensions}{\code{list} to customize axes dimensions.}
 
+\item{selectedRows}{\code{character vector} that specifies the row names of the rows that should appear selected (default NULL)}
+
 \item{tasks}{a character string or \code{\link[htmlwidgets]{JS}} or list of
 strings or \code{JS} representing a JavaScript function(s) to run
 after the \code{parcoords} has rendered.  These provide an opportunity
@@ -80,6 +83,10 @@ of the widget container will occur if \code{ width = NULL }.}
 of the widget container will occur if \code{ height = NULL }.}
 
 \item{elementId}{unique \code{CSS} selector id for the widget.}
+
+\item{nullValueSeparator}{\code{string} that identifies where \code{na} values are shown:  \code{top} - put above chart; \code{bottom} - put below chart; \code{nullValue} - use \code{nullValue} element passed through dimensions}
+
+\item{dimensionTitleRotation}{\code{integer} that indicates rotation angle for dimension labels (in degrees from horizontal).}
 }
 \value{
 An object of class \code{htmlwidget} that will
@@ -128,10 +135,6 @@ wrapper for d3.js \href{http://syntagmatic.github.io/parallel-coordinates/}{para
   library(dplyr)
   data( diamonds, package = "ggplot2" )
   diamonds \%>\%
-     mutate( carat = cut(carat,breaks = pretty(carat), right =F) ) \%>\%
-     group_by( carat ) \%>\%
-     select(-c(cut,color,clarity)) \%>\%
-     summarise_each(funs(mean),-carat) \%>\%
      parcoords(
         rownames= F
         ,color = list(
@@ -141,17 +144,8 @@ wrapper for d3.js \href{http://syntagmatic.github.io/parallel-coordinates/}{para
         ,brushMode = "1D"
       )
 }
-library(parcoordsSoS)
 
-parcoords(
-  mtcars,
-  dimensions = list(
-    cyl = list(
-      title = "cylinder",
-      tickValues = unique(mtcars$cyl)
-    )
-  )
-)
+\dontrun{
 
 parcoords(
   mtcars,
@@ -211,7 +205,6 @@ function(){
   )
 )
 
-
 parcoords(
   mtcars
   ,rownames = F
@@ -224,4 +217,20 @@ parcoords(
     )
   )
 )
+}
+
+
+library(parcoordsSoS)
+
+parcoords(
+  mtcars,
+  dimensions = list(
+    cyl = list(
+      title = "cylinder",
+      tickValues = unique(mtcars$cyl)
+    )
+  )
+)
+
+
 }

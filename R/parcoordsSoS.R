@@ -43,7 +43,7 @@
 #'          should appear on the axis, e.g., ordering = levels(thisDim) to maintain ordering for an
 #'          ordered factor  (factor/character dims only)
 #'          Add title="your axis title" to set the label for this dimension
-#' @param selectedRows \code{list} that specifies the row names of the rows that should appear selected
+#' @param selectedRows \code{character vector} that specifies the row names of the rows that should appear selected
 #'          default NULL for all rows
 #' @param tasks a character string or \code{\link[htmlwidgets]{JS}} or list of
 #'          strings or \code{JS} representing a JavaScript function(s) to run
@@ -65,6 +65,7 @@
 #' @param elementId unique \code{CSS} selector id for the widget.
 #' @param nullValueSeparator "top" - put above chart; "bottom" - put below chart;
 #'          "nullValue" - use "nullValue" element passed through dimensions
+#' @param dimensionTitleRotation "angle (in degrees) to rotate dimension labels by. (default = 0)          
 #'
 #' @return An object of class \code{htmlwidget} that will
 #' intelligently print itself into HTML in a variety of contexts
@@ -148,6 +149,7 @@ parcoords <- function(
   , height = NULL
   , elementId = NULL
   , nullValueSeparator = "bottom"
+  , dimensionTitleRotation = 0
 ) {
 
   crosstalk_opts <- NULL
@@ -241,6 +243,7 @@ parcoords <- function(
       , height = height
       , selectedRows = selectedRows
       , nullValueSeparator = nullValueSeparator
+      , dimensionTitleRotation = dimensionTitleRotation
     )
     , autoresize = autoresize
     , tasks = tasks

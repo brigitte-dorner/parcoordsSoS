@@ -29,15 +29,13 @@ server = function(input, output, session) {
   data( diamonds, package = "ggplot2" )
   ###standard parcoords plot in shiny
 
-  tmp  <- renderParcoords({
+  output$DiamondPlot <- renderParcoords({
     parcoords(diamonds[1:30, ],rownames= T,
               color = list(colorScale = htmlwidgets::JS('d3.scale.category10()'),
                             colorBy = "carat"),
-              brushMode = "2D-strums")
+              brushMode = "2D-strums", dimensionTitleRotation=-15)
   })
 
-  output$DiamondPlot <- tmp
-  print(tmp)
   ###Here we can access the variable input$id_rows to determine which are selected
   ###we display these results in a table
   output$SelectedData <- renderDataTable({
