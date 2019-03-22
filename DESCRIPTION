@@ -14,7 +14,7 @@ Authors@R: c(
     person("Brigitte", "Dorner", role=c("ctb"), comment = "Adaptation for SoS",
       email="bdorner@driftwoodcove.ca")
   )
-Maintainer: Kenton Russell <kent.russell@timelyportfolio.com>
+Maintainer: Brigitte Dorner <bdorner@driftwoodcove.ca>
 Description: Create interactive parallel coordinates charts with this htmlwidget
     wrapper for d3.js \href{http://syntagmatic.github.io/parallel-coordinates/}
     {parallel-coordinates}.
