@@ -57,9 +57,15 @@ progressive rendering.  Usually \code{ queue = T } for very large datasets.}
 \item{rate}{integer rate at which render will queue; see \href{https://github.com/syntagmatic/parallel-coordinates\#parcoords_rate}{}
 for a full discussion and some recommendations}
 
-\item{dimensions}{\code{list} to customize axes dimensions.}
-
-\item{selectedRows}{\code{character vector} that specifies the row names of the rows that should appear selected (default NULL)}
+\item{dimensions}{ \code{list} to customize axes dimensions.
+  Use \code{title} to set the title shown in the label,
+  \code{nullValue} to set the value to be shown in the plot if the data value is \code{NA},
+  \code{hide} logical (default FALSE) to hide this dimension,
+  \code{ymin} and \code{ymax} to set range of values to be shown for this dimension,
+  \code{info} to specify a tool tip to appear on hovering over the label,
+  \code{ordering} a character vector that specifies the order in which values of this dimension should appear on the axis for an ordered factor}
+  
+\item{selectedRows}{\code{character vector} that specifies the row names of the rows that should appear selected initially (default NULL)}
 
 \item{tasks}{a character string or \code{\link[htmlwidgets]{JS}} or list of
 strings or \code{JS} representing a JavaScript function(s) to run
@@ -84,7 +90,7 @@ of the widget container will occur if \code{ height = NULL }.}
 
 \item{elementId}{unique \code{CSS} selector id for the widget.}
 
-\item{nullValueSeparator}{\code{string} that identifies where \code{na} values are shown:  \code{top} - put above chart; \code{bottom} - put below chart; \code{nullValue} - use \code{nullValue} element passed through dimensions}
+\item{nullValueSeparator}{\code{string} that identifies where \code{na} values are shown:  \code{top} - put above chart; \code{bottom} - put below chart; \code{nullValue} - at location of \code{nullValue} set via dimensions option}
 
 \item{dimensionTitleRotation}{\code{integer} that indicates rotation angle for dimension labels (in degrees from horizontal).}
 }
