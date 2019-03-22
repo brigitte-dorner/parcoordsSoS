@@ -9,7 +9,7 @@ library(parcoordsSoS)
 
 data(mtcars)
 
-parcoordsSoS(
+parcoords(
   mtcars
   ,reorderable = T
   ,brushMode = "2d-strums"

@@ -1,5 +1,5 @@
 library(crosstalk)
-library(parcoords)
+library(parcoordsSoS)
 library(htmltools)
 library(plotly)
 

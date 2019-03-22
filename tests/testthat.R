@@ -1,4 +1,4 @@
 library(testthat)
-library(parcoords)
+library(parcoordsSoS)
 
-test_check("parcoords")
+test_check("parcoordsSoS")

@@ -141,7 +141,7 @@ wrapper for d3.js \href{http://syntagmatic.github.io/parallel-coordinates/}{para
         ,brushMode = "1D"
       )
 }
-library(parcoords)
+library(parcoordsSoS)
 
 parcoords(
   mtcars,

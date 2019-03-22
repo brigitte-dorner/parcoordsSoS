@@ -255,7 +255,7 @@ parcoords <- function(
     x,
     width = width,
     height = height,
-    package = 'parcoords',
+    package = 'parcoordsSoS',
     elementId = elementId
   )
 
@@ -265,7 +265,7 @@ parcoords <- function(
     pc$dependencies <- crosstalk::crosstalkLibs()
   }
 
-  print("Running parcoords modified for SoS")
+  #print("Running parcoords modified for SoS")
   pc
 }
 
@@ -276,7 +276,7 @@ parcoords <- function(
 #'
 #' @export
 parcoordsOutput <- function(outputId, width = '100%', height = '400px'){
-  shinyWidgetOutput(outputId, 'parcoords', width, height, package = 'parcoords')
+  shinyWidgetOutput(outputId, 'parcoords', width, height, package = 'parcoordsSoS')
 }
 
 #' Widget render function for use in Shiny

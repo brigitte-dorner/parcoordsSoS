@@ -12,7 +12,7 @@ Widget output function for use in Shiny
 \examples{
 \dontrun{
   library(shiny)
-  library(parcoords)
+  library(parcoordsSoS)
 
   ui = shinyUI(
     fluidPage(fluidRow(

@@ -1,7 +1,7 @@
 # devtools::install_github("rstudio/crosstalk@joe/simplify")
 # devtools::install_github("timelyportfolio/parcoords@feature/crosstalk2")
 
-library(parcoords)
+library(parcoordsSoS)
 library(sparkline)
 library(crosstalk)
 library(htmlwidgets)

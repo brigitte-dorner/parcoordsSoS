@@ -1,4 +1,4 @@
-library(parcoords)
+library(parcoordsSoS)
 
 parcoords(
   mtcars,

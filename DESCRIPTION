@@ -10,7 +10,7 @@ Authors@R: c(
     person("Kenton","Russell", role = c("aut","cre"), comment = "R interface",
       email = "kent.russell@timelyportfolio.com"),
     person("Mark","Albrecht",role = c("ctb"),comment = "Shiny output and example",
-      email="malbrech@nmdp.org")
+      email="malbrech@nmdp.org"),
     person("Brigitte", "Dorner", role=c("ctb"), comment = "Adaptation for SoS",
       email="bdorner@driftwoodcove.ca")
   )
@@ -18,8 +18,8 @@ Maintainer: Brigitte Dorner <bdorner@driftwoodcove.ca>
 Description: Create interactive parallel coordinates charts with this htmlwidget
     wrapper for d3.js \href{http://syntagmatic.github.io/parallel-coordinates/}
     {parallel-coordinates}.
-URL: https://github.com/timelyportfolio/parcoords
-BugReports: https://github.com/timelyportfolio/parcoords/issues
+URL: https://github.com/brigitte-dorner/parcoordsSoS
+BugReports: https://github.com/brigitte-dorner/parcoordsSoS/issues
 Depends:
     R (>= 3.2.0)
 License: MIT + file LICENSE
