@@ -7,8 +7,9 @@
 parcoords(data = NULL, rownames = T, color = NULL, brushMode = NULL,
   brushPredicate = "and", alphaOnBrushed = NULL, reorderable = F,
   axisDots = NULL, margin = NULL, composite = NULL, alpha = NULL,
-  queue = F, mode = F, rate = NULL, dimensions = NULL, tasks = NULL,
-  autoresize = FALSE, width = NULL, height = NULL, elementId = NULL)
+  queue = F, mode = F, rate = NULL, dimensions = NULL, selectedRows = NULL,
+  tasks = NULL, autoresize = FALSE, width = NULL, height = NULL, elementId = NULL,
+  nullValueSeparator = "bottom", dimensionTitleRotation = 0)
 }
 \arguments{
 \item{data}{data.frame with data to use in the chart}
@@ -56,7 +57,15 @@ progressive rendering.  Usually \code{ queue = T } for very large datasets.}
 \item{rate}{integer rate at which render will queue; see \href{https://github.com/syntagmatic/parallel-coordinates\#parcoords_rate}{}
 for a full discussion and some recommendations}
 
-\item{dimensions}{\code{list} to customize axes dimensions.}
+\item{dimensions}{ \code{list} to customize axes dimensions.
+  Use \code{title} to set the title shown in the label,
+  \code{nullValue} to set the value to be shown in the plot if the data value is \code{NA},
+  \code{hide} logical (default FALSE) to hide this dimension,
+  \code{ymin} and \code{ymax} to set range of values to be shown for this dimension,
+  \code{info} to specify a tool tip to appear on hovering over the label,
+  \code{ordering} a character vector that specifies the order in which values of this dimension should appear on the axis for an ordered factor}
+  
+\item{selectedRows}{\code{character vector} that specifies the row names of the rows that should appear selected initially (default NULL)}
 
 \item{tasks}{a character string or \code{\link[htmlwidgets]{JS}} or list of
 strings or \code{JS} representing a JavaScript function(s) to run
@@ -80,6 +89,10 @@ of the widget container will occur if \code{ width = NULL }.}
 of the widget container will occur if \code{ height = NULL }.}
 
 \item{elementId}{unique \code{CSS} selector id for the widget.}
+
+\item{nullValueSeparator}{\code{string} that identifies where \code{na} values are shown:  \code{top} - put above chart; \code{bottom} - put below chart; \code{nullValue} - at location of \code{nullValue} set via dimensions option}
+
+\item{dimensionTitleRotation}{\code{integer} that indicates rotation angle for dimension labels (in degrees from horizontal).}
 }
 \value{
 An object of class \code{htmlwidget} that will
@@ -128,10 +141,6 @@ wrapper for d3.js \href{http://syntagmatic.github.io/parallel-coordinates/}{para
   library(dplyr)
   data( diamonds, package = "ggplot2" )
   diamonds \%>\%
-     mutate( carat = cut(carat,breaks = pretty(carat), right =F) ) \%>\%
-     group_by( carat ) \%>\%
-     select(-c(cut,color,clarity)) \%>\%
-     summarise_each(funs(mean),-carat) \%>\%
      parcoords(
         rownames= F
         ,color = list(
@@ -141,17 +150,8 @@ wrapper for d3.js \href{http://syntagmatic.github.io/parallel-coordinates/}{para
         ,brushMode = "1D"
       )
 }
-library(parcoordsSoS)
 
-parcoords(
-  mtcars,
-  dimensions = list(
-    cyl = list(
-      title = "cylinder",
-      tickValues = unique(mtcars$cyl)
-    )
-  )
-)
+\dontrun{
 
 parcoords(
   mtcars,
@@ -211,7 +211,6 @@ function(){
   )
 )
 
-
 parcoords(
   mtcars
   ,rownames = F
@@ -224,4 +223,20 @@ parcoords(
     )
   )
 )
+}
+
+
+library(parcoordsSoS)
+
+parcoords(
+  mtcars,
+  dimensions = list(
+    cyl = list(
+      title = "cylinder",
+      tickValues = unique(mtcars$cyl)
+    )
+  )
+)
+
+
 }

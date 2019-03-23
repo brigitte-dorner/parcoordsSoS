@@ -3,9 +3,7 @@ d3.parcoords = function(config) {
     data: [],
     highlighted: [],
     dimensions: {},
-    // BD
-    // dimensionTitleRotation: 0,
-    dimensionTitleRotation: -15,
+    dimensionTitleRotation: 0,
     brushed: false,
     brushedColor: null,
     alphaOnBrushed: 0.0,
