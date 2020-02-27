@@ -113,7 +113,7 @@ var side_effects = d3.dispatch.apply(this,d3.keys(__))
     xscale.domain(pc.getOrderedDimensionKeys());
     pc.sortDimensions();
     // ****************************************************************
-    // new code here: hide this dimension if 'hide' flag is set in dims
+    // BD new code here: hide this dimension if 'hide' flag is set in dims
     d3.keys(__.dimensions).forEach(function(k) {
       if ((__.dimensions)[k]['hide']) {
         __.hideAxis.push(k)
@@ -228,7 +228,7 @@ pc.autoscale = function() {
     "number": function(k) {
       var extent = d3.extent(__.data, function(d) { return +d[k]; });
       // ****************************************************************
-      // new code here: overide extent if ylims are set
+      // BD new code here: overide extent if ylims are set
       if (__.dimensions[k].ymin) {
         console.log("overriding ymin for ", k, " : changing from ", extent[0], " to ", __.dimensions[k].ymin)
         extent[0] = __.dimensions[k].ymin;
@@ -391,7 +391,7 @@ pc.applyDimensionDefaults = function(dims) {
     newDims[k].outerTickSize= newDims[k].outerTickSize != null ? newDims[k].outerTickSize : 0;
     newDims[k].tickPadding= newDims[k].tickPadding != null ? newDims[k].tickPadding : 3;
     newDims[k].type= newDims[k].type ? newDims[k].type : types[k];
-
+    console.log('dim ' + k + ' type is ' + newDims[k].type);
     newDims[k].index = newDims[k].index != null ? newDims[k].index : currIndex;
     currIndex++;
   });
@@ -489,7 +489,7 @@ pc.renderBrushed.default = function() {
   pc.clear('brushed');
 
  // if (isBrushed()) {
- // new code: only try to render individual paths if there are any
+ // BD new code: only try to render individual paths if there are any
   if (isBrushed() && __.brushed) {
     __.brushed.forEach(path_brushed);
   }
@@ -670,7 +670,7 @@ function getNullPosition(dim) {
 		console.log("A value is NULL, nullValueSeparator set to 'top'");
 		return 1;
 // ****************************************************************
-// new code here:  add user-defined null value option
+// BD new code here:  add user-defined null value option
 	} else if (__.nullValueSeparator=="nullValue") {
 	  if (typeof __.dimensions[dim].nullValue == 'undefined') {
 	    console.log("nullValueSeparator set to show user-defined null value, but no null value specified")
@@ -690,7 +690,7 @@ function single_path(d, ctx) {
   var x, y;
 	d3.entries(__.dimensions).forEach(function(p, i) {  //p isn't really p
 	//***************************************
-	// new code here: change line from solid to dashed where it goes through a null value; allow for user-defined null values
+	// BD new code here: change line from solid to dashed where it goes through a null value; allow for user-defined null values
 	// old code commented out
 		if (i == 0) {
 // original code:
