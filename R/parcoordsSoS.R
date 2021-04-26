@@ -62,6 +62,7 @@
 #'          of the widget container will occur if \code{ width = NULL }.
 #' @param height integer in pixels defining the height of the widget.  Autosizing to 400px
 #'          of the widget container will occur if \code{ height = NULL }.
+#' @param tickFontSize font size to use for tick and axis labels, e.g.  \code{ tickFontSize = '10px' }         
 #' @param elementId unique \code{CSS} selector id for the widget.
 #' @param nullValueSeparator "top" - put above chart; "bottom" - put below chart;
 #'          "nullValue" - use "nullValue" element passed through dimensions
@@ -147,6 +148,7 @@ parcoords <- function(
   , autoresize = FALSE
   , width = NULL
   , height = NULL
+  , tickFontSize = '10px'
   , elementId = NULL
   , nullValueSeparator = "bottom"
   , dimensionTitleRotation = 0
@@ -241,6 +243,7 @@ parcoords <- function(
       , dimensions = dimensions
       , width = width
       , height = height
+      , tickFontSize = tickFontSize
       , selectedRows = selectedRows
       , nullValueSeparator = nullValueSeparator
       , dimensionTitleRotation = dimensionTitleRotation

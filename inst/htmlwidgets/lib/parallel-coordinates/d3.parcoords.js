@@ -230,11 +230,9 @@ pc.autoscale = function() {
       // ****************************************************************
       // BD new code here: overide extent if ylims are set
       if (__.dimensions[k].ymin) {
-        console.log("overriding ymin for ", k, " : changing from ", extent[0], " to ", __.dimensions[k].ymin)
         extent[0] = __.dimensions[k].ymin;
       }
       if (__.dimensions[k].ymax) {
-        console.log("overriding ymax for ", k, " : changing from ", extent[1], " to ", __.dimensions[k].ymax)
        extent[1] = __.dimensions[k].ymax;
       }
       // End new code

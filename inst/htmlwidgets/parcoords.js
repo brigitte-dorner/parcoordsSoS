@@ -124,7 +124,7 @@ HTMLWidgets.widget({
       }
 
       // customize our parcoords according to options
-      Object.keys( x.options ).filter(function(k){ return k !== "reorderable" && k !== "brushMode" && k !== "brushPredicate" && k!== "color" && k!=="rownames" && k!== "selectedRows"}).map( function(k) {
+      Object.keys( x.options ).filter(function(k){ return k !== "reorderable" && k !== "brushMode" && k !== "brushPredicate" && k!== "color" && k!=="rownames" && k!== "selectedRows" && k!== "tickFontSize"}).map( function(k) {
         // if the key exists within parcoords
         if ( parcoords[k] ){
           if( typeof x.options[k] === "boolean" ){
@@ -209,8 +209,10 @@ HTMLWidgets.widget({
 
       // sloppy but for now let's force text smaller
       //   ?? how best to provide parameter in R
+      //d3.selectAll("#" + el.id + " svg text")
+      // BD, April 2021: modified to use R setting
       d3.selectAll("#" + el.id + " svg text")
-          .style("font-size","10px");
+          .style("font-size", x.options.tickFontSize);
 
       // set up a container for tasks to perform after completion
       //  one example would be add callbacks for event handling
