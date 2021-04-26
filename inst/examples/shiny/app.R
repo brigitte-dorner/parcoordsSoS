@@ -30,9 +30,11 @@ server = function(input, output, session) {
   ###standard parcoords plot in shiny
 
   output$DiamondPlot <- renderParcoords({
-    parcoords(diamonds[1:30, ],rownames= T,
+    parcoords(diamonds[1:30, ],
+              rownames= T,
               color = list(colorScale = htmlwidgets::JS('d3.scale.category10()'),
                             colorBy = "carat"),
+              selectedRows = rownames(diamonds)[1:5],
               brushMode = "2D-strums", dimensionTitleRotation=-15)
   })
 

@@ -8,7 +8,7 @@ parcoords(data = NULL, rownames = T, color = NULL, brushMode = NULL,
   brushPredicate = "and", alphaOnBrushed = NULL, reorderable = F,
   axisDots = NULL, margin = NULL, composite = NULL, alpha = NULL,
   queue = F, mode = F, rate = NULL, dimensions = NULL, selectedRows = NULL,
-  tasks = NULL, autoresize = FALSE, width = NULL, height = NULL, elementId = NULL,
+  tasks = NULL, autoresize = FALSE, width = NULL, height = NULL, tickFontSize = "10px", elementId = NULL,
   nullValueSeparator = "bottom", dimensionTitleRotation = 0)
 }
 \arguments{
@@ -87,6 +87,8 @@ of the widget container will occur if \code{ width = NULL }.}
 
 \item{height}{integer in pixels defining the height of the widget.  Autosizing to 400px
 of the widget container will occur if \code{ height = NULL }.}
+
+\item{tickFontSize}{integer in pixels defining the font size to use for tick and axis labels. Default is 10px.}
 
 \item{elementId}{unique \code{CSS} selector id for the widget.}
 
